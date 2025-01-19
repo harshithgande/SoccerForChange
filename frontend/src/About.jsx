@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 
 export default function About() {
   const [team, setTeam] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     axios
@@ -11,12 +12,23 @@ export default function About() {
       .then((response) => {
         setTeam(response.data);
       });
+
+    const handleScroll = () => {
+      const teamSection = document.getElementById("team-section");
+      const rect = teamSection.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        setIsVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const arrow = (
-    <svg className="w-8 h-8" viewBox="0 0 24 24">
+    <svg className="w-8 h-8 transition-transform group-hover:translate-x-2" viewBox="0 0 24 24">
       <path
-        class="fill-emerald-600"
+        className="fill-emerald-600"
         d="M14.59 13H7a1 1 0 0 1 0-2h7.59l-2.3-2.3a1 1 0 1 1 1.42-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.42-1.4l2.3-2.3z"
       ></path>
     </svg>
@@ -24,7 +36,7 @@ export default function About() {
 
   return (
     <>
-      <div className="flex flex-col gap-16">
+      <div className="flex flex-col gap-16 animate-fade-in">
         <div className="md:px-24 sm:px-16 px-8 py-12 flex flex-col items-start gap-10">
           <div className="flex flex-col gap-2">
             <h4 className="uppercase tracking-wider font-bold text-emerald-600 text-sm">
@@ -40,7 +52,7 @@ export default function About() {
               <h2 className="text-xl font-semibold text-emerald-600">
                 Who we are
               </h2>
-              <p>
+              <p className="transition-opacity duration-700 opacity-80 hover:opacity-100">
                 Soccer For Change is a 501(c)(3) nonprofit organization founded
                 by high school students Vedanth Rao and Adel Dekhani looking to
                 encourage the development of soccer in youth, along with all the
@@ -54,7 +66,7 @@ export default function About() {
               <h2 className="text-xl font-semibold text-emerald-600">
                 What we do
               </h2>
-              <p>
+              <p className="transition-opacity duration-700 opacity-80 hover:opacity-100">
                 At Soccer For Change, we believe that sports can be a powerful
                 tool for personal growth and development. Our nonprofit
                 organization provides accessible coaching through reduced costs.
@@ -68,7 +80,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="relative h-72 bg-about bg-cover bg-top-50 saturate-25">
+        <div className="relative h-72 bg-about bg-cover bg-top-50 saturate-25 animate-slide-up">
           <div className="absolute inset-0 bg-emerald-600 opacity-90 mix-blend-multiply z-0 saturate-150"></div>
 
           <div className="relative h-full w-full lg:p-24 md:p-16 p-8 flex flex-col gap-1 justify-center z-10 text-3xl sm:text-4xl">
@@ -78,7 +90,7 @@ export default function About() {
             </h1>
           </div>
         </div>
-        <div className="min-h-screen md:px-24 sm:px-16 px-8 flex flex-col gap-10 bg-gray-100 -mt-16 pt-24 pb-32">
+        <div id="team-section" className="min-h-screen md:px-24 sm:px-16 px-8 flex flex-col gap-10 bg-gray-100 -mt-16 pt-24 pb-32">
           <div className="flex flex-col gap-2">
             <h4 className="uppercase tracking-wider font-bold text-emerald-600 text-sm">
               Leadership
@@ -89,13 +101,13 @@ export default function About() {
           </div>
 
           <div
-            class="grid gap-10 auto-cols-fr z-30 "
+            className={`grid gap-10 auto-cols-fr z-30 transition-all duration-1000 ${isVisible ? "translate-x-0 opacity-100" : "translate-x-20 opacity-0"}`}
             style={{
               "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))",
             }}
           >
             {!team || team["members"].length === 0 ? (
-              <p>No data found.</p>
+              <p className="text-center text-gray-500">No data found.</p>
             ) : (
               team["members"].map((person, index) => (
                 <AboutCard key={index} {...person} />
@@ -121,7 +133,7 @@ export default function About() {
 
             <a
               href="/apply"
-              className="w-fit rounded px-4 py-2 border-2 flex items-center border-emerald-600 text-emerald-600"
+              className="w-fit rounded px-4 py-2 border-2 flex items-center border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors"
             >
               <h3 className="font-semibold uppercase tracking-wider text-sm">
                 Apply Now
@@ -137,7 +149,7 @@ export default function About() {
 
 function AboutCard({ name, position, bio, image }) {
   return (
-    <div className="flex flex-col p-8 bg-white shadow-md rounded-lg gap-2 max-w-80 h-fit">
+    <div className="flex flex-col p-8 bg-white shadow-md rounded-lg gap-2 max-w-80 h-fit transition-transform hover:scale-105">
       <img
         className="object-cover object-top h-64 rounded-t-lg"
         src={`https://api.soccerforchange.org:444${image}`}

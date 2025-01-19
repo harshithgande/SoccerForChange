@@ -18,6 +18,10 @@ export default function Register() {
       .get("https://api.soccerforchange.org:444/api/camps")
       .then((response) => {
         setCamps(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching camps:", error);
+        setCamps({ camps: [] }); // Default empty state
       });
   }, []);
 
@@ -25,10 +29,10 @@ export default function Register() {
     <div className="bg-gray-50">
       <div className="py-12 pb-32 px-8 md:px-24 sm:px-16 flex flex-col gap-12">
         <h1 className="text-3xl font-semibold">Available Camps</h1>
-        {!camps || camps["camps"].length === 0 ? (
+        {!camps || !camps.camps || camps.camps.length === 0 ? (
           <p className="h-screen">No camps at this time.</p>
         ) : (
-          camps["camps"].map((camp, index) => (
+          camps.camps.map((camp, index) => (
             <CampCard {...camp} key={index} />
           ))
         )}
@@ -43,8 +47,8 @@ function CampCard({ name, description, location, date, id }) {
   const arrow = (
     <svg className="w-8 h-8" viewBox="0 0 24 24">
       <path
-        class="fill-white"
-        d="M14.59 13H7a1 1 0 0 1 0-2h7.59l-2.3-2.3a1 1 0 1 1 1.42-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.42-1.4l2.3-2.3z"
+        className="fill-white"
+        d="M14.59 13H7a1 1 0 0 1 0-2h7.59l-2.3-2.3a1 1  0 1 1 1.42-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.42-1.4l2.3-2.3z"
       ></path>
     </svg>
   );
@@ -54,7 +58,7 @@ function CampCard({ name, description, location, date, id }) {
       <div className="bg-white rounded-xl shadow-md flex flex-col lg:flex-row overflow-hidden w-fit">
         <img
           className="max-w-full lg:max-w-80 lg:max-h-full max-h-40 object-top object-cover"
-          src="register.webp"
+          src="Purchase Camp.jpg"
         />
 
         <div className="flex flex-col gap-4 flex-1">
@@ -140,7 +144,7 @@ function RegisterPopUp({ name, show, onClick, id }) {
       }  bg-black w-screen h-screen fixed top-0 left-0 flex flex-col items-center justify-center transition-all`}
     >
       <div
-        className="fixed max-w-[1000px]  w-full px-12"
+        className="fixed max-w-[1000px] bg-white shadow-lg rounded-lg w-full px-12"
         onClick={(e) => e.stopPropagation()}
       >
         <Elements stripe={stripePromise} options={options}>
