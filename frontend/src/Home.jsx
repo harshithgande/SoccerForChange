@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+
 export default function Home() {
   const arrow = (
     <svg className="w-8 h-8" viewBox="0 0 24 24">
@@ -7,6 +10,29 @@ export default function Home() {
       ></path>
     </svg>
   );
+
+  // Ref for the "Why Choose Us" section
+  const whyChooseRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.2 }
+    );
+
+    if (whyChooseRef.current) {
+      observer.observe(whyChooseRef.current);
+    }
+
+    return () => {
+      if (whyChooseRef.current) {
+        observer.unobserve(whyChooseRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="overflow-x-hidden -mt-24">
@@ -33,37 +59,48 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-white h-fit w-screen flex overflow-y-hidden px-8 sm:px-24 py-16 sm:py-32 items-center">
-        <div className="flex flex-wrap gap-x-24 gap-y-8 items-center">
-          <div className="flex flex-col gap-4 flex-1">
-            <div className="flex flex-col gap-3">
-              <h2 className="text-3xl font-semibold">Why Choose Us?</h2>
-              <hr className="border-4 w-12 border-emerald-600" />
+      {/* Smooth Transition Section */}
+      <div
+        ref={whyChooseRef}
+        className={`transition-all duration-700 transform ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
+        <div className="bg-white h-fit w-screen flex overflow-y-hidden px-8 sm:px-24 py-16 sm:py-32 items-center">
+          <div className="flex flex-wrap gap-x-24 gap-y-8 items-center">
+            <div className="flex flex-col gap-4 flex-1">
+              <div className="flex flex-col gap-3">
+                <h2 className="text-3xl font-semibold">Why Choose Us?</h2>
+                <hr className="border-4 w-12 border-emerald-600" />
+              </div>
+
+              <p className="max-w-[75ch] flex-grow min-text:min-w-0 min-w-[45ch]">
+                Our team of hardworking coaches are all current high school
+                players who have experienced development at the youth level. With
+                their knowledge, they can guide players and help them build
+                well-grounded skills, taking them to the next level on their
+                soccer journey. Find out more about our nonprofit organization and
+                our mission by visiting the{" "}
+                <a href="/about" className="text-blue-600">
+                  About
+                </a>{" "}
+                page or get started with camp registration on the{" "}
+                <a href="/register" className="text-blue-600">
+                  Registration
+                </a>{" "}
+                page.
+              </p>
             </div>
 
-            <p className="max-w-[75ch] flex-grow min-text:min-w-0 min-w-[45ch]">
-              Our team of hardworking coaches are all current high school
-              players who have experienced development at the youth level. With
-              their knowledge, they can guide players and help them build
-              well-grounded skills, taking them to the next level on their
-              soccer journey. Find out more about our nonprofit organization and
-              our mission by visiting the{" "}
-              <a href="/about" className="text-blue-600">
-                About
-              </a>{" "}
-              page or get started with camp registration on the{" "}
-              <a href="/register" className="text-blue-600">
-                Registration
-              </a>{" "}
-              page.
-            </p>
+            {/* Panel-Styled Image with Smooth Transition */}
+            <div className="flex-1 min-w-72 bg-gray-100 p-6 rounded-xl shadow-lg border border-gray-300">
+              <img
+                className="rounded-lg"
+                src="Why Choose Us.jpg"
+                alt="Soccer for Change"
+              />
+            </div>
           </div>
-
-          <img
-            className="flex-1 min-w-72"
-            src="Why Choose Us.jpg"
-            alt="Soccer for Change"
-          ></img>
         </div>
       </div>
     </div>
