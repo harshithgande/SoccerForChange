@@ -2,21 +2,43 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 function NavItem({ to, name }) {
+  const location = useLocation();
+  const [isTopOfPage, setIsTopOfPage] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsTopOfPage(window.scrollY === 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <NavLink to={to}>
       {({ isActive }) => (
         <div className="w-fit">
-          <span className={isActive ? "text-emerald-600" : "text-gray-200"}>
+          <span
+            className={`transition-colors duration-300 ${
+              isActive
+                ? "text-emerald-500 font-bold"
+                : isTopOfPage && location.pathname === "/"
+                ? "text-gray-200 hover:text-white font-medium"
+                : "text-gray-800 hover:text-emerald-600 font-semibold"
+            }`}
+          >
             {name}
           </span>
           {isActive && (
-            <div className="bg-emerald-600 w-auto h-0.5 rounded-full" />
+            <div className="bg-emerald-500 w-auto h-0.5 rounded-full" />
           )}
         </div>
       )}
     </NavLink>
   );
 }
+
+
 
 export default function Header() {
   const [isTopOfPage, setIsTopOfPage] = useState(true);
@@ -102,14 +124,16 @@ export default function Header() {
             }
           ></img>
           <h2
-            className={`uppercase font-bold tracking-wider ${
-              isTopOfPage && location.pathname == "/" && !expand
-                ? "text-gray-200"
-                : "text-emerald-600"
-            }`}
-          >
-            Soccer for Change
-          </h2>
+  className={`uppercase tracking-wider text-lg sm:text-xl transition-colors duration-300 ${
+    isTopOfPage && location.pathname === "/" && !expand
+      ? "text-gray-200 font-semibold"
+      : "text-emerald-800 font-extrabold"
+  }`}
+>
+  Soccer for Change
+</h2>
+
+
         </div>
         <nav className="sm:flex gap-12 text-lg font-semibold hidden">
           <NavItem to="/" name="Home" />

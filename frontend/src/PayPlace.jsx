@@ -39,22 +39,22 @@ export default function PayPlace() {
 
       {/* ✅ Event Summary */}
       <section className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold text-emerald-600">Event Summary</h2>
-        <div className="mt-8 flex flex-wrap justify-center gap-8">
-          <div className="max-w-md p-6 bg-white shadow-md rounded-lg">
-            <h3 className="text-xl font-semibold">📅 Date & Time</h3>
-            <p className="mt-2 text-gray-600">{campDate}</p>
-          </div>
-          <div className="max-w-md p-6 bg-white shadow-md rounded-lg">
-            <h3 className="text-xl font-semibold">📍 Location</h3>
-            <p className="mt-2 text-gray-600">{campLocation}</p>
-          </div>
-          <div className="max-w-md p-6 bg-white shadow-md rounded-lg">
-            <h3 className="text-xl font-semibold">💰 Cost per Participant</h3>
-            <p className="mt-2 text-gray-600">${campPrice}</p>
-          </div>
-        </div>
-      </section>
+  <h2 className="text-3xl font-bold text-emerald-600 mb-8">Event Summary</h2>
+  <div className="flex flex-wrap justify-center gap-8">
+    <div className="max-w-md w-80 p-6 bg-white shadow-md rounded-lg">
+      <h3 className="text-xl font-semibold">📅 Date & Time</h3>
+      <p className="mt-2 text-gray-600">{campDate}</p>
+    </div>
+    <div className="max-w-md w-80 p-6 bg-white shadow-md rounded-lg">
+      <h3 className="text-xl font-semibold">📍 Location</h3>
+      <p className="mt-2 text-gray-600">{campLocation}</p>
+    </div>
+    <div className="max-w-md w-80 p-6 bg-white shadow-md rounded-lg">
+      <h3 className="text-xl font-semibold">💰 Cost per Participant</h3>
+      <p className="mt-2 text-gray-600">${campPrice}</p>
+    </div>
+  </div>
+</section>
 
       {/* ✅ Event Details */}
       <section className="py-16 px-6 bg-white">
@@ -75,25 +75,28 @@ export default function PayPlace() {
         <p className="text-gray-600 mt-2 text-center">Choose the number of participants and proceed to payment.</p>
 
         {/* Participants Selector */}
-        <div className="mt-6">
-          <label className="block text-lg font-semibold text-gray-700 text-center">Number of Participants</label>
-          <div className="flex items-center mt-2">
-            <button
-              className="bg-gray-300 text-gray-700 px-3 py-1 rounded-l-md disabled:opacity-50"
-              onClick={() => setParticipants((prev) => Math.max(1, prev - 1))}
-              disabled={participants === 1}
-            >
-              −
-            </button>
-            <span className="px-6 py-2 bg-gray-200 text-lg font-semibold">{participants}</span>
-            <button
-              className="bg-gray-300 text-gray-700 px-3 py-1 rounded-r-md"
-              onClick={() => setParticipants((prev) => prev + 1)}
-            >
-              +
-            </button>
-          </div>
-        </div>
+        <div className="mt-6 flex flex-col items-center">
+  <label className="block text-lg font-semibold text-gray-700 text-center mb-2">
+    Number of Participants
+  </label>
+  <div className="flex items-center">
+    <button
+      className="bg-gray-300 text-gray-700 px-3 py-1 rounded-l-md disabled:opacity-50"
+      onClick={() => setParticipants((prev) => Math.max(1, prev - 1))}
+      disabled={participants === 1}
+    >
+      −
+    </button>
+    <span className="px-6 py-2 bg-gray-200 text-lg font-semibold">{participants}</span>
+    <button
+      className="bg-gray-300 text-gray-700 px-3 py-1 rounded-r-md"
+      onClick={() => setParticipants((prev) => prev + 1)}
+    >
+      +
+    </button>
+  </div>
+</div>
+
 
         {/* Total Price */}
         <div className="mt-6 text-lg font-semibold text-gray-800">
@@ -129,15 +132,11 @@ export default function PayPlace() {
         <div className="mt-8 max-w-3xl mx-auto">
           <div className="p-4 bg-white shadow-md rounded-lg mb-4">
             <h3 className="text-xl font-semibold">Who can join the camp?</h3>
-            <p className="text-gray-600 mt-2">The camp is open to all players ages 8-18.</p>
+            <p className="text-gray-600 mt-2">The camp is open to all players ages 8-12.</p>
           </div>
           <div className="p-4 bg-white shadow-md rounded-lg mb-4">
             <h3 className="text-xl font-semibold">What should I bring?</h3>
-            <p className="text-gray-600 mt-2">Bring cleats, shin guards, a water bottle, and a positive attitude!</p>
-          </div>
-          <div className="p-4 bg-white shadow-md rounded-lg mb-4">
-            <h3 className="text-xl font-semibold">Will meals be provided?</h3>
-            <p className="text-gray-600 mt-2">Lunch and snacks will be provided daily.</p>
+            <p className="text-gray-600 mt-2">Bring cleats, shin guards, a water bottle, snacks, and a positive attitude!</p>
           </div>
         </div>
       </section>

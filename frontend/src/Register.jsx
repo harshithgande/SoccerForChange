@@ -5,12 +5,12 @@
 
     // Single Camp Data (Instead of fetching from API)
     const camp = {
-      name: "Elite Training Camp",
+      name: "Soccer Training Camp",
       description: "Sign up your child for a 2-day soccer camp! They will advance their skills and bond with their peers as they complete several practice activities meant for kids of all skill levels! All classes are taught by current high school soccer players with coaching experience.",
       date: "April 7th-8th (Monday and Tuesday)",
-      location: "123 Soccer Field, Springfield",
-      price: 200,
-      mapCoordinates: { lat: 40.7128, lng: -74.0060 }, // Example coordinates (NYC)
+      location: "Clyde Hill Elementary School, Clyde Hill",
+      price: 10,
+      mapCoordinates: { lat: 47.63138208436928, lng: -122.21158220380752 }, 
     };
 
     // Function to handle "Register Now" button click
