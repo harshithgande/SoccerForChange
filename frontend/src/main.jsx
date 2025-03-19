@@ -1,31 +1,35 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+
 import App from "./App.jsx";
-import "./index.css";
 import About from "./About.jsx";
 import Register from "./Register.jsx";
 import Apply from "./Apply.jsx";
 import PrivacyPolicy from "./PrivacyPolicy.jsx";
 import PayPlace from "./PayPlace.jsx";
-import Home from "./Home.jsx"; // ✅ FIXED: Import Home component
-
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      { path: "/", element: <Home /> }, // ✅ Home Page
-      { path: "/about", element: <About /> },
-      { path: "/register", element: <Register /> },
-      { path: "/apply", element: <Apply /> },
-      { path: "/privacy", element: <PrivacyPolicy /> },
-      { path: "/pay", element: <PayPlace /> }, // ✅ Payment Page
-    ],
-  },
-]);
+import Home from "./Home.jsx";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} /> // ✅ FIXED: Removed extra <App />
+  <React.StrictMode>
+    {/* ✅ Add the correct basename */}
+    <BrowserRouter basename="/SoccerForChange">
+      <Routes>
+        <Route path="/" element={<App />}>
+          {/* Nested Routes */}
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="register" element={<Register />} />
+          <Route path="apply" element={<Apply />} />
+          <Route path="privacy" element={<PrivacyPolicy />} />
+          <Route path="pay" element={<PayPlace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
 );

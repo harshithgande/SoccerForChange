@@ -3,8 +3,9 @@ import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // ✅ Required for GitHub Pages
-  base: "/SoccerForChange/", // <-- Match your repo name exactly. If custom domain, use "/"
+  // ✅ For GitHub Pages: use repo name in base
+  // If deploying to a custom domain or root path, change this to "/"
+  base: "/SoccerForChange/",
 
   plugins: [react()],
 
@@ -16,5 +17,6 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
+    open: true, // Optional: opens browser automatically on dev server start
   },
 });
