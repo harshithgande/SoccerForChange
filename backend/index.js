@@ -4,22 +4,27 @@ import cors from "cors";
 import config from "./config.json" assert { type: "json" };
 import { EmbedBuilder, WebhookClient } from "discord.js";
 import Stripe from "stripe";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Required for serving React files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const stripe = new Stripe(
-  "stripekey"
-); // add stripekey to config json
-const PORT = 3000;
+const stripe = new Stripe("stripekey"); // Replace with config.stripeKey if stored securely
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-
 app.use(express.json());
-app.use("/static", express.static("public"));
 
+// ✅ Serve static files from frontend build (React)
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+// ✅ API Routes (Backend)
 app.get("/api/camps", async (req, res) => {
   try {
     const camps = await Camp.findAll();
-
     res.status(200).send({
       camps: camps.map((camp) => ({
         id: camp.id,
@@ -30,16 +35,13 @@ app.get("/api/camps", async (req, res) => {
       })),
     });
   } catch (error) {
-    res.status(500).send({
-      message: "An error occurred",
-    });
+    res.status(500).send({ message: "An error occurred" });
   }
 });
 
 app.get("/api/team", async (req, res) => {
   try {
     const members = await Member.findAll();
-
     res.status(200).send({
       members: members.map((member) => ({
         name: member.name,
@@ -49,9 +51,7 @@ app.get("/api/team", async (req, res) => {
       })),
     });
   } catch (error) {
-    res.status(500).send({
-      message: "An error occurred",
-    });
+    res.status(500).send({ message: "An error occurred" });
   }
 });
 
@@ -60,64 +60,47 @@ app.post("/api/register", async (req, res) => {
     const { firstName, lastName, email, campId } = req.body;
 
     if (!firstName || !lastName || !email || !campId) {
-      res.status(418).send({
+      return res.status(418).send({
         message: "Please fill out all fields.",
         success: false,
       });
-      return;
     }
 
-    const user = await SignUp.findOne({
-      where: {
-        email: email,
-      },
-    });
+    const user = await SignUp.findOne({ where: { email } });
 
     if (user) {
-      res.status(409).send({
+      return res.status(409).send({
         message: "That email already exists.",
         success: false,
       });
-      return;
     }
 
-    SignUp.create({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+    await SignUp.create({
+      firstName,
+      lastName,
+      email,
       CampId: campId,
     });
 
-    res
-      .status(200)
-      .send({ message: "Success! You're all registered.", success: true });
-  } catch (error) {
-    res.status(500).send({
-      message: "An error occurred",
-      success: false,
+    res.status(200).send({
+      message: "Success! You're all registered.",
+      success: true,
     });
+  } catch (error) {
+    res.status(500).send({ message: "An error occurred", success: false });
   }
 });
 
 app.post("/api/signups", async (req, res) => {
   try {
     const { key } = req.body;
-    if (key != config.key) {
-      res.status(401).send({
-        message: "Not authorized",
-      });
-      return;
+    if (key !== config.key) {
+      return res.status(401).send({ message: "Not authorized" });
     }
 
     const signups = await SignUp.findAll({
       attributes: ["firstName", "lastName", "email"],
-      include: [
-        {
-          model: Camp,
-          attributes: ["name"],
-          required: false,
-        },
-      ],
+      include: [{ model: Camp, attributes: ["name"] }],
     });
 
     res.status(200).send({
@@ -129,18 +112,14 @@ app.post("/api/signups", async (req, res) => {
       })),
     });
   } catch (error) {
-    res.status(500).send({
-      message: "An error occurred",
-    });
+    res.status(500).send({ message: "An error occurred" });
   }
 });
 
 app.post("/api/apply", async (req, res) => {
   try {
     const { firstName, lastName, email, message } = req.body;
-    const webhookClient = new WebhookClient({
-      url: config.webhookUrl,
-    });
+    const webhookClient = new WebhookClient({ url: config.webhookUrl });
 
     const embed = new EmbedBuilder()
       .setTitle("New Application")
@@ -152,7 +131,7 @@ app.post("/api/apply", async (req, res) => {
       )
       .setColor(0x14c414);
 
-    webhookClient.send({
+    await webhookClient.send({
       username: "Soccer For Change",
       embeds: [embed],
     });
@@ -162,17 +141,13 @@ app.post("/api/apply", async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
-      message: "An error occurred",
-      success: false,
-    });
+    res.status(500).send({ message: "An error occurred", success: false });
   }
 });
 
 app.post("/create-intent", async (req, res) => {
   try {
     const { email } = req.body;
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: 1000,
       currency: "usd",
@@ -185,4 +160,10 @@ app.post("/create-intent", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Running on port ${PORT}`));
+// ✅ React Router fallback (for all non-API routes)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+});
+
+// ✅ Start server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
