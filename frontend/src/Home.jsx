@@ -1,4 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom"; // ✅ Use Link for routing!
+
+// ✅ Import images so Vite handles them properly
+import mainHomepageImage from "/public/Main Homepage Image.jpg";
+import whyChooseUsImage from "/public/Why Choose Us.jpg";
 
 export default function Home() {
   const arrow = (
@@ -16,13 +21,12 @@ export default function Home() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Only trigger the transition once
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // Stops observing after becoming visible once
+          observer.disconnect();
         }
       },
-      { threshold: 0.1 } // Reduced threshold for faster trigger
+      { threshold: 0.1 }
     );
 
     if (whyChooseRef.current) {
@@ -40,7 +44,7 @@ export default function Home() {
       <div
         className="relative bg-center bg-cover h-screen sm:bg-fixed"
         style={{
-          backgroundImage: "url('Main Homepage Image.jpg')",
+          backgroundImage: `url(${mainHomepageImage})`,
         }}
       >
         <div className="bg-black bg-opacity-55 w-full h-full flex flex-col items-center justify-center gap-6">
@@ -51,8 +55,10 @@ export default function Home() {
             Empowering the youth through soccer programs that foster teamwork,
             leadership, and personal growth
           </h2>
-          <a
-            href="/register"
+          
+          {/* ✅ Link instead of <a href> */}
+          <Link
+            to="/register"
             className="flex items-center px-6 py-2.5 bg-emerald-600 rounded-full mt-4 group cursor-pointer"
           >
             <h3 className="font-semibold uppercase tracking-wide text-[#FFA726]">
@@ -61,7 +67,7 @@ export default function Home() {
             <div className="group-hover:translate-x-1 transition-transform">
               {arrow}
             </div>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -69,9 +75,7 @@ export default function Home() {
       <div
         ref={whyChooseRef}
         className={`transition-opacity transition-transform ease-out duration-700 ${
-          isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-8"
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         } will-change-transform will-change-opacity`}
       >
         <div className="bg-white h-fit w-screen flex overflow-hidden px-8 sm:px-24 py-16 sm:py-32 items-center">
@@ -91,13 +95,14 @@ export default function Home() {
                 soccer journey.
                 <br />
                 Visit the{" "}
-                <a href="/about" className="text-blue-600 underline">
+                {/* ✅ Use Link */}
+                <Link to="/about" className="text-blue-600 underline">
                   About
-                </a>{" "}
+                </Link>{" "}
                 page or get started on the{" "}
-                <a href="/register" className="text-blue-600 underline">
+                <Link to="/register" className="text-blue-600 underline">
                   Registration
-                </a>{" "}
+                </Link>{" "}
                 page!
               </p>
             </div>
@@ -106,7 +111,7 @@ export default function Home() {
             <div className="flex-1 min-w-72 bg-gray-100 p-6 rounded-xl shadow-lg border border-gray-300">
               <img
                 className="rounded-lg"
-                src="Why Choose Us.jpg"
+                src={whyChooseUsImage}
                 alt="Soccer for Change"
               />
             </div>
